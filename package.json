@@ -2,14 +2,15 @@
   "name": "pam-sql-api",
   "version": "1.0.0",
   "description": "api for PAM project",
-  "main": "index.js",
+  "main": "api.js",
   "dependencies": {
-    "mysql": "^2.16.0",
-    "restify": "^8.2.0"
+    "mysql": "^2.17.1",
+    "restify": "^8.3.3"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api.js"
   },
   "repository": {
     "type": "git",
