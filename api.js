@@ -26,16 +26,16 @@ server.get('/', function (req, res, next) {
 
 server.get('/tables', function (req, res, next) {
 
-    let tables = [];
+    //let tables = [];
 
     connection.query('SHOW TABLES;', function (error, results, fields) {
         if (error)
             throw error;
 
-        results.forEach(result => {
-            tables.push(result);
-        });
-        res.send(JSON.stringify(tables));
+        // results.forEach(result => {
+        //     tables.push(result);
+        // });
+        res.send(JSON.stringify(results));
     });
 
     return next();
