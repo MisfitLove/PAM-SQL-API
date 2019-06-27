@@ -20,7 +20,7 @@ server.use(restify.plugins.bodyParser({
 server.get('/', function (req, res, next) {
     let json = JSON.stringify([{ name: "baza 1" }, { name: 'baza 2' }]);
     console.log(connection);
-    res.send(json);
+    res.send("dziaua");
     return next();
 });
 
@@ -48,11 +48,11 @@ server.get('/db', function (req, res, next) {
     //body = JSON.parse(req.body);    
 
      connection = mysql.createConnection({
-        host     : "sql7.freemysqlhosting.com",
+        host     : "192.6.2.31",
         port     :  3306,
-        database : "sql7296847",       
-        user     : "sql7296847",
-        password : "uomek2paua",
+        database : "world",       
+        user     : "root",
+        password : "root",
     });
 
     connection.connect(function (err) {
