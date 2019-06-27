@@ -1,6 +1,7 @@
 const restify = require('restify');
 const mysql = require('mysql');
 
+//antyulomeq13
 
 var server = restify.createServer();
 var connection;
@@ -48,11 +49,11 @@ server.get('/db', function (req, res, next) {
     //body = JSON.parse(req.body);    
 
      connection = mysql.createConnection({
-        host     : "192.6.2.31",
+        host     : "db4free.net",
         port     :  3306,
-        database : "world",       
-        user     : "root",
-        password : "root",
+        database : "world4ulomeq",       
+        user     : "ulomeq",
+        password : "antyulomeq13",
     });
 
     connection.connect(function (err) {
@@ -90,10 +91,11 @@ server.post('/query', (req, res) => {
 function connect(body, callback){
     console.log("body? "+ body);
     var connection = mysql.createConnection({
-        host     : body.host,  //body.host
-        database : body.db,       //body.db
-        user     : body.user,       //body.user
-        password : body.password,           //body.password
+        host     : "db4free.net",  // body.host, etc...
+        port     :  3306,
+        database : "world4ulomeq",       
+        user     : "ulomeq",
+        password : "antyulomeq13",
     });
     console.log(body)
     connection.connect(function (err) {
