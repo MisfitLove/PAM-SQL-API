@@ -21,7 +21,8 @@ server.use(restify.plugins.bodyParser({
 server.get('/', function (req, res, next) {
     let json = JSON.stringify([{ name: "baza 1" }, { name: 'baza 2' }]);
     console.log(connection);
-    res.send("dziaua");
+    res.header('content-type', 'json');
+    res.send({hello: 'world'});
     return next();
 });
 
@@ -36,6 +37,7 @@ server.get('/tables', function (req, res, next) {
         // results.forEach(result => {
         //     tables.push(result);
         // });
+        res.header('content-type', 'json');
         res.send(JSON.stringify(results));
     });
 
