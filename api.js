@@ -48,10 +48,11 @@ server.get('/db', function (req, res, next) {
     //body = JSON.parse(req.body);    
 
      connection = mysql.createConnection({
-        host     : req.params.host,
-        database : req.params.database,       
-        user     : req.params.user,
-        password : req.params.password
+        host     : "sql7.freemysqlhosting.com",
+        port     :  3306,
+        database : "sql7296847",       
+        user     : "sql7296847",
+        password : "uomek2paua",
     });
 
     connection.connect(function (err) {
@@ -61,19 +62,19 @@ server.get('/db', function (req, res, next) {
         }
 
         console.log('Connected as id ' + connection.threadId);
-
-    });
-
-
-    connection.query('SHOW DATABASES;', function (error, results, fields) {
-        if (error)
-            throw error;
-
-        results.forEach(result => {
-            dbs.push(result);
+        connection.query('SHOW DATABASES;', function (error, results, fields) {
+            if (error)
+                throw error;
+    
+            results.forEach(result => {
+                dbs.push(result);
+            });
+            res.send(JSON.stringify(dbs));
         });
-        res.send(JSON.stringify(dbs));
+    
     });
+
+
 
     //connection.end();
 
@@ -81,38 +82,38 @@ server.get('/db', function (req, res, next) {
 });
 
 server.post('/query', (req, res) => {
-    console.log(req.body.username);
-    connect(req.body, res1 => res.send(200, res1));
+    console.log(req.body);
+    connect(req.body, res => res.send(200, res1));
 });
 
 
-// function connect(body, callback){
-//     console.log("body? "+ body);
-//     var connection = mysql.createConnection({
-//         host     : body.host,  //body.host
-//         database : body.db,       //body.db
-//         user     : body.user,       //body.user
-//         password : body.password,           //body.password
-//     });
-
-//     connection.connect(function (err) {
-//         if (err) {
-//             console.error('Error connecting: ' + err.stack);
-//             return;
-//         }
-//         console.log('Connected as id ' + connection.threadId);
-//     });
+function connect(body, callback){
+    console.log("body? "+ body);
+    var connection = mysql.createConnection({
+        host     : body.host,  //body.host
+        database : body.db,       //body.db
+        user     : body.user,       //body.user
+        password : body.password,           //body.password
+    });
+    console.log(body)
+    connection.connect(function (err) {
+        if (err) {
+            console.error('Error connecting: ' + err.stack);
+            return;
+        }
+        console.log('Connected as id ' + connection.threadId);
+    });
      
-//     let query = body.query ? 'SHOW DATABASES' : body.query
-//     connection.query('SHOW DATABASES;', function (error, results, fields) {
-//         if (error)
-//             throw error;
+    let query = body.query ? 'SHOW DATABASES' : body.query
+    connection.query('SHOW DATABASES;', function (error, results, fields) {
+        if (error)
+            throw error;
 
-//         callback(JSON.stringify(results));
-//     });
-//     connection.end();
+        callback(JSON.stringify(results));
+    });
+    connection.end();
     
-// };
+};
 
 // curl --header "Content-Type: application/json" \
 //   --request POST \
