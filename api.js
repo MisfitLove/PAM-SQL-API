@@ -49,12 +49,10 @@ server.get('/db', function (req, res) {
             results.forEach(result => {
                 dbs.push(result);
             });
+            res.header('content-type', 'json')
             res.send(JSON.stringify(dbs));
         });
     })
-    
-    res.header('content-type', 'json')
-    res.send(JSON.stringify(dbs));
 });
 
 server.post('/query', (req, res) => {
