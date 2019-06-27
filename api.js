@@ -1,11 +1,8 @@
 const restify = require('restify');
 const mysql = require('mysql');
 
-//antyulomeq13
-
 var server = restify.createServer();
 var connection;
-
 
 server.listen(3000, function() {
     console.log('%s listening at %s', server.name, server.url);  
@@ -26,27 +23,7 @@ server.get('/', function (req, res, next) {
     return next();
 });
 
-server.get('/tables', function (req, res, next) {
-
-    //let tables = [];
-
-    connection.query('SHOW TABLES;', function (error, results, fields) {
-        if (error)
-            throw error;
-
-        // results.forEach(result => {
-        //     tables.push(result);
-        // });
-        res.header('content-type', 'json');
-        res.send(JSON.stringify(results));
-    });
-
-    return next();
-
-});
-
-
-server.get('/db', function (req, res, next) {
+server.get('/db', function (req, res) {
     let dbs = [];
     //body = JSON.parse(req.body);    
 
@@ -74,14 +51,10 @@ server.get('/db', function (req, res, next) {
             });
             res.send(JSON.stringify(dbs));
         });
+    })
     
-    });
-
-
-
-    //connection.end();
-
-    return next();
+    res.header('content-type', 'json')
+    res.send(JSON.stringify(dbs));
 });
 
 server.post('/query', (req, res) => {
