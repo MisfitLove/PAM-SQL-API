@@ -1,0 +1,25 @@
+{
+  "name": "pam-sql-api",
+  "version": "1.0.0",
+  "description": "api for PAM project",
+  "main": "api.js",
+  "dependencies": {
+    "mysql": "^2.17.1",
+    "restify": "^8.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MisfitLove/PAM-SQL-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MisfitLove/PAM-SQL-API/issues"
+  },
+  "homepage": "https://github.com/MisfitLove/PAM-SQL-API#readme"
+}
