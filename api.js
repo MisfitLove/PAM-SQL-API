@@ -27,12 +27,21 @@ server.get('/db', function (req, res) {
     let dbs = [];
     //body = JSON.parse(req.body);    
 
-     connection = mysql.createConnection({
-        host     : "db4free.net",
+    //  connection = mysql.createConnection({
+    //     host     : "db4free.net",
+    //     port     :  3306,
+    //     database : "world4ulomeq",       
+    //     user     : "ulomeq",
+    //     password : "antyulomeq13",
+    // });
+
+
+    connection = mysql.createConnection({
+        host     : "localhost",
         port     :  3306,
-        database : "world4ulomeq",       
-        user     : "ulomeq",
-        password : "antyulomeq13",
+        database : "world",       
+        user     : "root",
+        password : "root",
     });
 
     connection.connect(function (err) {
@@ -55,40 +64,66 @@ server.get('/db', function (req, res) {
     })
 });
 
+server.get('/tables', function (req, res) {
+    
+        connection.query('SHOW TABLES;', function (error, results, fields) {
+            if (error)
+                throw error;
+    
+            res.header('content-type', 'json')
+            res.send(results);
+        });
+});
+
+server.get('/columns/:name', function (req, res) {
+
+    
+    var query = "SHOW COLUMNS FROM " + req.params.name + ";";
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
+    });
+});
+
 server.post('/query', (req, res) => {
     console.log(req.body);
     connect(req.body, res => res.send(200, res1));
 });
 
 
-function connect(body, callback){
-    console.log("body? "+ body);
-    var connection = mysql.createConnection({
-        host     : "db4free.net",  // body.host, etc...
-        port     :  3306,
-        database : "world4ulomeq",       
-        user     : "ulomeq",
-        password : "antyulomeq13",
-    });
-    console.log(body)
-    connection.connect(function (err) {
-        if (err) {
-            console.error('Error connecting: ' + err.stack);
-            return;
-        }
-        console.log('Connected as id ' + connection.threadId);
-    });
+// function connect(body, callback){
+//     console.log("body? "+ body);
+//     var connection = mysql.createConnection({
+//         host     : "db4free.net",  // body.host, etc...
+//         port     :  3306,
+//         database : "world4ulomeq",       
+//         user     : "ulomeq",
+//         password : "antyulomeq13",
+//     });
+//     console.log(body)
+//     connection.connect(function (err) {
+//         if (err) {
+//             console.error('Error connecting: ' + err.stack);
+//             return;
+//         }
+//         console.log('Connected as id ' + connection.threadId);
+//     });
      
-    let query = body.query ? 'SHOW DATABASES' : body.query
-    connection.query('SHOW DATABASES;', function (error, results, fields) {
-        if (error)
-            throw error;
+//     let query = body.query ? 'SHOW DATABASES' : body.query
+//     connection.query('SHOW DATABASES;', function (error, results, fields) {
+//         if (error)
+//             throw error;
 
-        callback(JSON.stringify(results));
-    });
-    connection.end();
+//         callback(JSON.stringify(results));
+//     });
+//     connection.end();
     
-};
+// };
 
 // curl --header "Content-Type: application/json" \
 //   --request POST \
