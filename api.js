@@ -35,22 +35,29 @@ server.get('/db', function (req, res) {
     //     password : "antyulomeq13",
     // });
 
+    // console.log("host: ", req.params.host);
+    // console.log("port: ",req.params.port);
+    // console.log("database: ", req.params.database);
+    // console.log("user: ", req.params.user);
+    // console.log("password: ", req.params.password);
 
     connection = mysql.createConnection({
-        host     : "localhost",
-        port     :  3306,
-        database : "world",       
-        user     : "root",
-        password : "root",
+        host     : req.params.host,
+        port     : req.params.port,
+        database : req.params.database,       
+        user     : req.params.user,
+        password : req.params.password,
     });
 
     connection.connect(function (err) {
         if (err) {
             console.error('Error connecting: ' + err.stack);
-            return;
-        }
+            res.status(400);
+            res.send("test");
+        }else{
 
         console.log('Connected as id ' + connection.threadId);
+
         connection.query('SHOW DATABASES;', function (error, results, fields) {
             if (error)
                 throw error;
@@ -61,6 +68,7 @@ server.get('/db', function (req, res) {
             res.header('content-type', 'json')
             res.send(JSON.stringify(dbs));
         });
+    }
     })
 });
 
