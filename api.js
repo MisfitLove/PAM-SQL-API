@@ -68,6 +68,13 @@ server.get('/db', function (req, res) {
             res.header('content-type', 'json')
             res.send(JSON.stringify(dbs));
         });
+
+        connection.query("USE " + req.params.database + ";" , function (error, results, fields) {
+            if(error)
+                throw error;
+        });
+
+
     }
     })
 });
@@ -96,6 +103,70 @@ server.get('/columns/:name', function (req, res) {
         res.header('content-type', 'json')
         res.send(results);
     });
+});
+
+server.get('/select', function (req, res) {
+    
+    var query = "SELECT " + req.params.value + " FROM " + req.params.table;
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
+    });
+});
+
+server.get('/selectCondition', function (req, res) {
+    
+    var query = "SELECT " + req.params.value + " FROM " + req.params.table + " WHERE " + req.params.cond + " = " + req.params.condVal + ";";
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
+    });
+});
+
+server.get('/selectArrayTest', function (req, res) {
+    
+
+    var paramsArr = JSON.parse(req.query.paramsArr);
+    // var paramsCondArr = JSON.parse(req.query.paramsCondArr);
+    // var paramsCondValArr = JSON.parse(req.query.paramsCondValArray);
+
+    var paramsStr = "";
+    
+
+    for(var i = 0; i < Object.keys(paramsArr).length-1; i++){
+        paramsStr.concat(paramsArr[i]);
+    }
+
+    console.log(paramsStr);
+
+
+    // var arr = JSON.parse(req.query.array);
+    // console.log(arr);
+    // var len = Object.keys(arr).length
+    // console.log(len);
+
+    // var test = arr[0];
+    // console.log(test);
+    // var query = "SELECT " + req.params.value + " FROM " + req.params.table + " WHERE " + req.params.cond + " = " + req.params.condVal + ";";
+    // console.log(query);
+    
+    // connection.query(query, function (error, results, fields) {
+    //     if (error)
+    //         throw error;
+
+    //     res.header('content-type', 'json')
+    //     res.send(results);
+    // });
 });
 
 server.post('/query', (req, res) => {
