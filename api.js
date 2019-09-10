@@ -104,11 +104,11 @@ server.post('/query', (req, res) => {
 function connect(body, callback){
     console.log("body? "+ body);
     var connection = mysql.createConnection({
-        host     : "db4free.net",  // body.host, etc...
-        port     :  3306,
-        database : "world4ulomeq",       
-        user     : "ulomeq",
-        password : "antyulomeq13",
+        host     : body.host,//"db4free.net",  // body.host, etc...
+        port     : body.port,// 3306,
+        database : body.database,//"world4ulomeq",       
+        user     : body.user,// "ulomeq",
+        password : body.password//"antyulomeq13",
     });
     console.log(body)
     connection.connect(function (err) {
