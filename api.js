@@ -135,19 +135,37 @@ server.get('/selectCondition', function (req, res) {
 
 server.get('/selectArrayTest', function (req, res) {
     
-
     var paramsArr = JSON.parse(req.query.paramsArr);
-    // var paramsCondArr = JSON.parse(req.query.paramsCondArr);
-    // var paramsCondValArr = JSON.parse(req.query.paramsCondValArray);
+    var paramsCondArr = JSON.parse(req.query.paramsCondArr);
+    var paramsCondValArr = JSON.parse(req.query.paramsCondValArray);
 
     var paramsStr = "";
+    var condStr = "";
     
+    
+   
+    for(var i = 0; i < Object.keys(paramsArr).length; i++){
 
-    for(var i = 0; i < Object.keys(paramsArr).length-1; i++){
-        paramsStr.concat(paramsArr[i]);
+        if(i != Object.keys(paramsArr).length-1){
+            paramsStr = paramsStr.concat(paramsArr[i] + ", ");
+        }else{            
+            paramsStr = paramsStr.concat(paramsArr[i]);
+        }        
+    }
+
+    for(var i = 0; i < Object.keys(paramsCondArr).length; i++){
+
+        if(i != Object.keys(paramsCondArr).length-1){
+            condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i] + " AND ");
+        }else{
+            condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i]);
+        }        
     }
 
     console.log(paramsStr);
+    console.log(condStr);
+
+    var query = "SELECT " + paramsStr + " FROM " + req.params.table + " WHERE " + condStr + ";";
 
 
     // var arr = JSON.parse(req.query.array);
@@ -168,6 +186,27 @@ server.get('/selectArrayTest', function (req, res) {
     //     res.send(results);
     // });
 });
+
+// server.get('/test', function (req, res) {
+    
+//     var arr = JSON.parse(req.query.arr);
+//     console.log(arr);
+//     // for(var i = 0; i < Object.keys(paramsCondArr).length; i++){
+
+//     //     if(i != Object.keys(paramsCondArr).length-1){
+//     //         condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i] + " AND ");
+//     //     }else{
+//     //         condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i]);
+//     //     }        
+//     // }
+
+//     console.log(paramsStr);
+//     console.log(condStr);
+
+//     //var query = "SELECT " + paramsStr + " FROM " + req.params.table + " WHERE " + condStr + ";";
+
+// });
+
 
 server.post('/query', (req, res) => {
     console.log(req.body);
