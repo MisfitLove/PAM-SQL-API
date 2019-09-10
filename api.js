@@ -18,6 +18,18 @@ server.use(restify.plugins.bodyParser({
     mapParams: true
 }));
 
+server.get('/test', function (req, res, next){
+    console.log("poszedl get test");
+    console.log({req});
+    return next();
+});
+
+server.post('/test', function (req, res, next){
+    console.log("poszedl post test");
+    console.log({req});
+    return next();
+});
+
 server.get('/', function (req, res, next) {
     let json = JSON.stringify([{ name: "baza 1" }, { name: 'baza 2' }]);
     console.log(connection);
@@ -106,8 +118,10 @@ function connect(body, callback){
         console.log('Connected as id ' + connection.threadId);
     });
      
-    let query = body.query ? 'SHOW DATABASES' : body.query
-    connection.query('SHOW DATABASES;', function (error, results, fields) {
+
+    let query = body.query? body.query : 'SHOW DATABASES;' //<-do naprawy
+
+    connection.query(query, function (error, results, fields) {
         if (error)
             throw error;
 
