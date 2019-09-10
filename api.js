@@ -21,6 +21,7 @@ server.use(restify.plugins.bodyParser({
 server.get('/test', function (req, res, next){
     console.log("poszedl get test");
     console.log({req});
+    res.send(200);
     return next();
 });
 
