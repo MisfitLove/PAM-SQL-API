@@ -209,8 +209,31 @@ server.get('/selectArrayTest', function (req, res) {
 
 
 server.post('/query', (req, res) => {
+    result = [];
     console.log(req.body);
-    connect(req.body, res => res.send(200, res1));
+    var connection = mysql.createConnection({
+        host     : req.body.host,//"db4free.net",  // body.host, etc...
+        port     : req.body.port,// 3306,
+        database : req.body.database,//"world4ulomeq",       
+        user     : req.body.user,// "ulomeq",
+        password : req.body.password//"antyulomeq13",
+    });
+
+    connection.connect(function (err) {
+        if (err) {
+            console.error('Error connecting: ' + err.stack);
+            return;
+        }
+
+        console.log('Connected as id ' + connection.threadId);
+        
+        connection.query(req.body.query, function (err, result, fields) {
+            if (err) throw err;
+            res.status(200);
+            res.send(result);
+            connection.end();
+          });
+    });
 });
 
 
