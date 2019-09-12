@@ -228,7 +228,11 @@ server.post('/query', (req, res) => {
         console.log('Connected as id ' + connection.threadId);
         
         connection.query(req.body.query, function (err, result, fields) {
-            if (err) throw err;
+            if (err) {
+                res.send(400, err)
+                connection.end();
+                return;
+            };
             res.status(200);
             res.send(result);
             connection.end();
