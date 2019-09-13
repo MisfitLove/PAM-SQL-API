@@ -27,21 +27,37 @@ server.get('/db', function (req, res) {
     let dbs = [];
     //body = JSON.parse(req.body);    
 
-     connection = mysql.createConnection({
-        host     : "db4free.net",
-        port     :  3306,
-        database : "world4ulomeq",       
-        user     : "ulomeq",
-        password : "antyulomeq13",
+    //  connection = mysql.createConnection({
+    //     host     : "db4free.net",
+    //     port     :  3306,
+    //     database : "world4ulomeq",       
+    //     user     : "ulomeq",
+    //     password : "antyulomeq13",
+    // });
+
+    // console.log("host: ", req.params.host);
+    // console.log("port: ",req.params.port);
+    // console.log("database: ", req.params.database);
+    // console.log("user: ", req.params.user);
+    // console.log("password: ", req.params.password);
+
+    connection = mysql.createConnection({
+        host     : req.params.host,
+        port     : req.params.port,
+        database : req.params.database,       
+        user     : req.params.user,
+        password : req.params.password,
     });
 
     connection.connect(function (err) {
         if (err) {
             console.error('Error connecting: ' + err.stack);
-            return;
-        }
+            res.status(400);
+            res.send("test");
+        }else{
 
         console.log('Connected as id ' + connection.threadId);
+
         connection.query('SHOW DATABASES;', function (error, results, fields) {
             if (error)
                 throw error;
@@ -52,43 +68,207 @@ server.get('/db', function (req, res) {
             res.header('content-type', 'json')
             res.send(JSON.stringify(dbs));
         });
+
+        connection.query("USE " + req.params.database + ";" , function (error, results, fields) {
+            if(error)
+                throw error;
+        });
+
+
+    }
     })
 });
 
-server.post('/query', (req, res) => {
-    console.log(req.body);
-    connect(req.body, res => res.send(200, res1));
+server.get('/tables', function (req, res) {
+    
+        connection.query('SHOW TABLES;', function (error, results, fields) {
+            if (error)
+                throw error;
+    
+            res.header('content-type', 'json')
+            res.send(results);
+        });
 });
 
+server.get('/columns/:name', function (req, res) {
 
-function connect(body, callback){
-    console.log("body? "+ body);
-    var connection = mysql.createConnection({
-        host     : "db4free.net",  // body.host, etc...
-        port     :  3306,
-        database : "world4ulomeq",       
-        user     : "ulomeq",
-        password : "antyulomeq13",
+    
+    var query = "SHOW COLUMNS FROM " + req.params.name + ";";
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
     });
-    console.log(body)
+});
+
+server.get('/select', function (req, res) {
+    
+    var query = "SELECT " + req.params.value + " FROM " + req.params.table;
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
+    });
+});
+
+server.get('/selectCondition', function (req, res) {
+    
+    var query = "SELECT " + req.params.value + " FROM " + req.params.table + " WHERE " + req.params.cond + " = " + req.params.condVal + ";";
+    console.log(query);
+    
+    connection.query(query, function (error, results, fields) {
+        if (error)
+            throw error;
+
+        res.header('content-type', 'json')
+        res.send(results);
+    });
+});
+
+server.get('/selectArrayTest', function (req, res) {
+    
+    var paramsArr = JSON.parse(req.query.paramsArr);
+    var paramsCondArr = JSON.parse(req.query.paramsCondArr);
+    var paramsCondValArr = JSON.parse(req.query.paramsCondValArray);
+
+    var paramsStr = "";
+    var condStr = "";
+    
+    
+   
+    for(var i = 0; i < Object.keys(paramsArr).length; i++){
+
+        if(i != Object.keys(paramsArr).length-1){
+            paramsStr = paramsStr.concat(paramsArr[i] + ", ");
+        }else{            
+            paramsStr = paramsStr.concat(paramsArr[i]);
+        }        
+    }
+
+    for(var i = 0; i < Object.keys(paramsCondArr).length; i++){
+
+        if(i != Object.keys(paramsCondArr).length-1){
+            condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i] + " AND ");
+        }else{
+            condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i]);
+        }        
+    }
+
+    console.log(paramsStr);
+    console.log(condStr);
+
+    var query = "SELECT " + paramsStr + " FROM " + req.params.table + " WHERE " + condStr + ";";
+
+
+    // var arr = JSON.parse(req.query.array);
+    // console.log(arr);
+    // var len = Object.keys(arr).length
+    // console.log(len);
+
+    // var test = arr[0];
+    // console.log(test);
+    // var query = "SELECT " + req.params.value + " FROM " + req.params.table + " WHERE " + req.params.cond + " = " + req.params.condVal + ";";
+    // console.log(query);
+    
+    // connection.query(query, function (error, results, fields) {
+    //     if (error)
+    //         throw error;
+
+    //     res.header('content-type', 'json')
+    //     res.send(results);
+    // });
+});
+
+// server.get('/test', function (req, res) {
+    
+//     var arr = JSON.parse(req.query.arr);
+//     console.log(arr);
+//     // for(var i = 0; i < Object.keys(paramsCondArr).length; i++){
+
+//     //     if(i != Object.keys(paramsCondArr).length-1){
+//     //         condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i] + " AND ");
+//     //     }else{
+//     //         condStr = condStr.concat(paramsCondArr[i] + " = " + paramsCondValArr[i]);
+//     //     }        
+//     // }
+
+//     console.log(paramsStr);
+//     console.log(condStr);
+
+//     //var query = "SELECT " + paramsStr + " FROM " + req.params.table + " WHERE " + condStr + ";";
+
+// });
+
+
+server.post('/query', (req, res) => {
+    result = [];
+    console.log(req.body);
+    var connection = mysql.createConnection({
+        host     : req.body.host,//"db4free.net",  // body.host, etc...
+        port     : req.body.port,// 3306,
+        database : req.body.database,//"world4ulomeq",       
+        user     : req.body.user,// "ulomeq",
+        password : req.body.password//"antyulomeq13",
+    });
+
     connection.connect(function (err) {
         if (err) {
             console.error('Error connecting: ' + err.stack);
             return;
         }
-        console.log('Connected as id ' + connection.threadId);
-    });
-     
-    let query = body.query ? 'SHOW DATABASES' : body.query
-    connection.query('SHOW DATABASES;', function (error, results, fields) {
-        if (error)
-            throw error;
 
-        callback(JSON.stringify(results));
+        console.log('Connected as id ' + connection.threadId);
+        
+        connection.query(req.body.query, function (err, result, fields) {
+            if (err) {
+                res.send(400, err)
+                connection.end();
+                return;
+            };
+            res.status(200);
+            res.send(result);
+            connection.end();
+          });
     });
-    connection.end();
+});
+
+
+// function connect(body, callback){
+//     console.log("body? "+ body);
+//     var connection = mysql.createConnection({
+//         host     : "db4free.net",  // body.host, etc...
+//         port     :  3306,
+//         database : "world4ulomeq",       
+//         user     : "ulomeq",
+//         password : "antyulomeq13",
+//     });
+//     console.log(body)
+//     connection.connect(function (err) {
+//         if (err) {
+//             console.error('Error connecting: ' + err.stack);
+//             return;
+//         }
+//         console.log('Connected as id ' + connection.threadId);
+//     });
+     
+//     let query = body.query ? 'SHOW DATABASES' : body.query
+//     connection.query('SHOW DATABASES;', function (error, results, fields) {
+//         if (error)
+//             throw error;
+
+//         callback(JSON.stringify(results));
+//     });
+//     connection.end();
     
-};
+// };
 
 // curl --header "Content-Type: application/json" \
 //   --request POST \
